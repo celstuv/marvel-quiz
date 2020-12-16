@@ -1,5 +1,7 @@
 import React, { useRef, useEffect, useState, Fragment } from 'react';
 //useRef et useEffect useState, Fragment sont des hooks
+import ReactDOM from 'react-dom';
+import { Link } from 'react-router-dom';
 
 const Landing = () => {
 
@@ -45,12 +47,13 @@ const Landing = () => {
   //condition de fonction si Btn est true alors affiche les boutons
   const displayBtn = btn && (
     //Fragment = div sans les caractéristiques de la div
+    //Link permet faire des liens. <link></Link> = <a href></a>
     <Fragment>
       <div className="leftBox">
-        <button onMouseOver={setLeftImg} onMouseOut={clearImg} className="btn-welcome">Inscription</button>
+        <Link onMouseOver={setLeftImg} onMouseOut={clearImg} className="btn-welcome" to ="/signup">Inscription</Link>
       </div>
       <div className="rightBox">
-        <button onMouseOver={setRightImg} onMouseOut={clearImg} className="btn-welcome">Connexion</button>
+        <Link onMouseOver={setRightImg} onMouseOut={clearImg} className="btn-welcome" to ="/login">Connexion</Link>
       </div>
     </Fragment>
   )

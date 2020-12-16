@@ -4,7 +4,7 @@ const ErrorPage = () => {
   return (
       <div className="quiz-bg">
         <div className="container">
-            <p>Signup !</p>
+            <p>Error Page !</p>
         </div>
       </div>
   )
