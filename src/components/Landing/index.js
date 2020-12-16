@@ -22,15 +22,35 @@ const Landing = () => {
   }, [])
 
 
+  //Afficher les griffes qd on survol les boutons inscriptions et connexions
+  const setLeftImg = () => {
+    refWolverine.current.classList.add("leftImg");
+    //refWolverine.current.classList.remove("rightImg");
+  }
+
+  const setRightImg = () => {
+    refWolverine.current.classList.add("rightImg");
+    //refWolverine.current.classList.remove("leftImg");
+  }
+
+  // Autre methodes pour Effacer les griffes si on est sur l'un a=ou l'autre des boutons
+  const clearImg = () => {
+    if(refWolverine.current.classList.contains("leftImg")) {
+      refWolverine.current.classList.remove("leftImg")
+    } else if (refWolverine.current.classList.contains("rightImg"))
+    refWolverine.current.classList.remove("rightImg");
+  }
+
+
   //condition de fonction si Btn est true alors affiche les boutons
   const displayBtn = btn && (
     //Fragment = div sans les caractéristiques de la div
     <Fragment>
       <div className="leftBox">
-        <button className="btn-welcome">Inscription</button>
+        <button onMouseOver={setLeftImg} onMouseOut={clearImg} className="btn-welcome">Inscription</button>
       </div>
       <div className="rightBox">
-        <button className="btn-welcome">Connexion</button>
+        <button onMouseOver={setRightImg} onMouseOut={clearImg} className="btn-welcome">Connexion</button>
       </div>
     </Fragment>
   )
