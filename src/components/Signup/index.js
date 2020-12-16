@@ -1,7 +1,9 @@
 import React, {useState, useContext} from 'react';
+import ReactDOM from 'react-dom';
+import {Link} from 'react-router-dom';
 import {FirebaseContext} from '../Firebase';
 
-const Signup = () => {
+const Signup = (props) => {
 
   //Instancier les methodes de firebases via index.js du dossier Firebase
   const firebase = useContext(FirebaseContext);
@@ -32,9 +34,10 @@ const handleSubmit = (event) => {
       .then(user => {
         //inscription ok, on vide le form
         setLoginData({...data});
+        props.history.push('/welcome');
       })
       .catch(error => {
-        setError(error)
+        setError(error);
         setLoginData({...data});
       })
 }
@@ -43,11 +46,10 @@ const handleSubmit = (event) => {
 const {pseudo, email, password, confirmPassword} = loginData;
 
 //Vérification du formaulaire
-const btn = pseudo ==="" || email ==="" ||password ==="" || password !== confirmPassword ? <button disabled>Inscription</button> : <button>Inscription</button>
+const btn = pseudo === "" || email === "" ||password === "" || password !== confirmPassword ? <button disabled>Inscription</button> : <button>Inscription</button>
 
 //gestion des erreurs
-const errorMsg = error !=='' && <span>{error.message}</span>;
-
+const errorMsg = error !== '' && <span>{error.message}</span>;
 
   return (
       <div className="signUpLoginBox">
@@ -77,6 +79,9 @@ const errorMsg = error !=='' && <span>{error.message}</span>;
                   </div>
                   {btn}
                 </form>
+                <div className="linkContainer">
+                  <Link className="simpleLink" to="/login">Déja inscrit? Connectez-vous</Link>
+                </div>
             </div>
           </div>
         </div>
