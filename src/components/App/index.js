@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+/*import ReactDOM from 'react-dom';*/
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Header from '../Header';
 import Landing from '../Landing';
@@ -16,7 +16,7 @@ function App() {
       <Header />
 
       <Switch>
-        <Route exact path="/" component={Landing} /> // exact permet de prendre strictement le /
+        <Route exact path="/" component={Landing} /> /* exact permet de prendre strictement le */
         <Route path="/welcome" component={Welcome} />
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
