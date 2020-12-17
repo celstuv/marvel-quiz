@@ -29,19 +29,25 @@ const Signup = (props) => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const {email, password} = loginData;
+    const { email, password, pseudo } = loginData;
     /*Utilisation de l'API*/
      firebase.signupUser(email, password)
+     .then( authUser => {
+            return firebase.user(authUser.user.uid).set({
+                pseudo,
+                email
+            })
+     })
      /*inscription ok, on vide le form*/
-      .then(user => {
-        /*On vide les champs*/
-         setLoginData({...data});
-         props.history.push('/welcome');
-         })
+      .then(() => {
+          /*On vide les champs*/
+           setLoginData({...data});
+           props.history.push('/welcome');
+           })
       .catch(error => {
-        setError(error);
-        setLoginData({...data});
-      })
+            setError(error);
+            setLoginData({...data});
+          })
   }
 
   /*Destructuring*/
