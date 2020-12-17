@@ -11,23 +11,25 @@ const Config = {
   };
 
 class Firebase {
-  constructor() {
-    app.initializeApp(Config);
-    this.auth = app.auth();
-  }
+    constructor() {
+      app.initializeApp(Config);
+      this.auth = app.auth();
+    }
 
-  //Inscription
-  signupUser = (email, password) => {
-    this.auth.createUserWithEmailAndPassword(email, password);
-  }
+    //Inscription
+    signupUser = (email, password) =>
+      this.auth.createUserWithEmailAndPassword(email, password);
 
-  //connexion
-  loginUser = (email, password) => {
-    this.auth.signInWithEmailAndPassword(email, password);
-  }
+    //connexion
+    loginUser = (email, password) =>
+      this.auth.signInWithEmailAndPassword(email, password);
 
-  //Deconnexion
-  signoutUser = () => this.auth.signOut();
+    /*Deconnexion*/
+    signoutUser = () => this.auth.signOut();
+
+    /*Récupérer le Password*/
+    passwordReset = email => this.auth.sendPasswordResetEmail(email);
+
 }
 
 export default Firebase;
