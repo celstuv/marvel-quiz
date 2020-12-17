@@ -1,10 +1,12 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
+import {Link} from 'react-router-dom';
 
 const Header = () => {
   return (
     <header>
       <div className="banner-container">
-      <h1><a href="/"></a>Marvel Quiz</h1>
+      <h1><Link to="/">Marvel Quiz</Link></h1>
       </div>
     </header>
   )
