@@ -72,9 +72,11 @@ class Quiz extends Component {
   }
 
   nextQuestion = () => {
+    /*Verifier si l'on se trouve dans la dernière question du niveau*/
     if (this.state.idQuestion === this.state.maxQuestions - 1) {
+      /*Si c'est le cas, on bascule sur composant gameOver*/
       this.gameOver();
-      /*console.log('GameOver');*/
+      /*sinon on basculte sur la question suivante*/
     } else {
       this.setState(prevState => ({
         idQuestion: prevState.idQuestion + 1
@@ -91,8 +93,7 @@ class Quiz extends Component {
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
-        draggable: true,
-        progress: 1,
+        draggable: false,
         bodyClassName: "toastify-color"
         });
     } else {
@@ -102,8 +103,7 @@ class Quiz extends Component {
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
-        draggable: true,
-        progress: 1,
+        draggable: false,
         bodyClassName: "toastify-color"
         });
             }
@@ -137,9 +137,24 @@ class Quiz extends Component {
         })
   }
 
+  getPercentage = (maxQuest, ourScore) => (ourScore / maxQuest) * 100;
+
   gameOver = () => {
-    this.setState({ quizEnd: true })
+    const gradePercent = this.getPercentage(this.state.maxQuestions, this.state.score);
+    if(gradePercent >= 50){
+      this.setState({
+        quizLevel: this.state.uizLevel + 1,
+        percent: gradePercent,
+        quizEnd: true
+      })
+    }else {
+      this.setState({
+        percent: gradePercent,
+        quizEnd: true
+      })
+    }
   }
+
 
 
   /* qd le render s'éxécute, componentDidMount s'exécute */
@@ -156,7 +171,18 @@ class Quiz extends Component {
     })
 
     /*Si le QuizEnd (niveau) est terminé, j'affiche le message se trouvant dans le component QuizOver*/
-    return this.state.quizEnd ? ( <QuizOver /> ) : (
+    return this.state.quizEnd ? (
+      <QuizOver
+        ref={this.storedDataRef}
+        levelNames={this.state.levelNames}
+        score={this.state.score}
+        maxQuestions={this.state.maxQuestions}
+        quizLevel={this.state.quizLevel}
+        percent={this.state.percent}
+        />
+      )
+      :
+      (
       <Fragment>
         <h2>Bonjour : {pseudo}, et bienvenue sur notre Quiz !</h2>
         <Levels/>
