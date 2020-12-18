@@ -12,14 +12,16 @@ class Quiz extends Component {
     storedQuestions: [],
     question: null,
     options: [],
-    idQuestion: 0
+    idQuestion: 0,
+    btnDisabled: true,
+    userAnswer: null
   }
 
   loadQuestions = quizz => {
-    /*console.log(quizz);*/
     const fetchedArrayQuiz = QuizMarvel[0].quizz[quizz];
     /*console.log(fetchedArrayQuiz);*/
     if(fetchedArrayQuiz.length >= this.state.maxQuestions) {
+      //Ne pas faire afficher la réponse (dans le cas de user dév ayantl'extension react chrome, mozilla, etc)
         const newArray = fetchedArrayQuiz.map( ({answer,... keepRest}) => keepRest);
         this.setState({storedQuestions: newArray})
     } else {
@@ -41,7 +43,12 @@ class Quiz extends Component {
       })
     }
   }
-
+  submitAnswer = selectedAnswer => {
+    this.setState({
+      userAnswer: selectedAnswer,
+      btnDisabled: false
+    })
+  }
 
 
   /*qd le render s'éxécute, componentDidMount s'exécute */
@@ -49,7 +56,9 @@ class Quiz extends Component {
      const {pseudo} = this.props.userData;
      const displayOptions = this.state.options.map((option, index) => {
        return(
-         <p key={index} className="answerOptions">{option}</p>
+         <p key={index}
+           onClick={() => this.submitAnswer(option)}
+           className={`answerOptions ${this.state.userAnswer === option ? "selected" : null }`}>{option}</p>
        )
      })
 
@@ -61,8 +70,8 @@ class Quiz extends Component {
          <h3>{this.state.question}</h3>
 
          {displayOptions}
-         
-         <button className="btnSubmit" type="button">Suivant</button>
+
+         <button className="btnSubmit" type="button" disabled={this.state.btnDisabled} >Suivant</button>
        </div>
      )
    }
