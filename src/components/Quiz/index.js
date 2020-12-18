@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, { Component, Fragment } from 'react'
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {QuizMarvel} from '../quizMarvel/';
@@ -160,7 +160,9 @@ class Quiz extends Component {
       <Fragment>
         <h2>Bonjour : {pseudo}, et bienvenue sur notre Quiz !</h2>
         <Levels/>
-        <ProgressBar/>
+        <ProgressBar
+          idQuestion={this.state.idQuestion}
+          maxQuestions={this.state.maxQuestions} />
         <h3>{this.state.question}</h3>
 
         {displayOptions}
@@ -169,8 +171,10 @@ class Quiz extends Component {
           className="btnSubmit"
           onClick={this.nextQuestion}
           type="button"
-          disabled={this.state.btnDisabled}>
-          Suivant
+          disabled={this.state.btnDisabled} >
+
+          {this.state.idQuestion < this.state.maxQuestions - 1 ? 'Suivant' : 'Terminer'}
+
         </button>
       </Fragment>
     )

@@ -1,17 +1,27 @@
 import React, { Fragment } from 'react';
 
-const ProgressBar = () => {
+/*Importation des props de quiz*/
+const ProgressBar = ({idQuestion, maxQuestions}) => {
+  /*console.log(idQuestion, maxQuestions);*/
+  const qetWidth = (totalQuestions, questionId) => {
+    return (100 / totalQuestions) * questionId;
+  }
+
+  const actualQuestion = idQuestion + 1;
+  const progressPercent = qetWidth(maxQuestions, actualQuestion);
+  console.log(progressPercent);
 
   return (
     <Fragment>
       <div className="percentage">
-        <div className="progressPercent">Question 1 / 10</div>
-        <div className="progressPercent">Progression: 10%</div>
+        <div className="progressPercent">{`Question : ${idQuestion + 1}/${maxQuestions}`}</div>
+        <div className="progressPercent">{`Progression : ${progressPercent}%`}</div>
       </div>
       <div className="progressBar">
-        <div className="progressBarChange" style = {{ width: '10%' }}></div>
+        <div className="progressBarChange" style = {{ width: `${progressPercent}%` }}></div>
       </div>
     </Fragment>
   )
 }
-export default ProgressBar;
+//On optimise les performances de notre fonction
+export default React.memo(ProgressBar);
