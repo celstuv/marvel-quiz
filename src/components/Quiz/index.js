@@ -1,9 +1,10 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {QuizMarvel} from '../quizMarvel/';
 import Levels from '../Levels';
 import ProgressBar from '../ProgressBar';
+import QuizOver from '../QuizOver';
 
 toast.configure();
 
@@ -22,8 +23,9 @@ class Quiz extends Component {
     btnDisabled: true,
     userAnswer: null,
     score: 0,
-    showWelcomeMsg: false
-  };
+    showWelcomeMsg: false,
+    quizEnd: false
+  }
 
   storedDataRef = React.createRef();
 
@@ -43,11 +45,10 @@ class Quiz extends Component {
     } else {
       alert('Pas assez de questions');
     }
-  };
+  }
 
   //Configurer pop-up pour accueillir le joueur
   showWelcomeMsg = pseudo => {
-
     if (!this.state.showWelcomeMsg) {
       this.setState({ showWelcomeMsg: true })
 
@@ -58,7 +59,7 @@ class Quiz extends Component {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: false,
-        /* progress: undefined */
+        bodyClassName: "toastify-color-welcome"
       });
     }
 
@@ -72,7 +73,8 @@ class Quiz extends Component {
 
   nextQuestion = () => {
     if (this.state.idQuestion === this.state.maxQuestions - 1) {
-      /* End */
+      this.gameOver();
+      /*console.log('GameOver');*/
     } else {
       this.setState(prevState => ({
         idQuestion: prevState.idQuestion + 1
@@ -108,31 +110,37 @@ class Quiz extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.storedQuestions !== prevState.storedQuestions) {
-      this.setState({
-        question: this.state.storedQuestions[this.state.idQuestion].question,
-        options: this.state.storedQuestions[this.state.idQuestion].options
-          })
-    }
-    if (this.state.idQuestion !== prevState.idQuestion) {
-      this.setState({
-        question: this.state.storedQuestions[this.state.idQuestion].question,
-        options: this.state.storedQuestions[this.state.idQuestion].options,
-        userAnswer: null,
-        btnDisabled: true
-          })
+      if (this.state.storedQuestions !== prevState.storedQuestions) {
+        this.setState({
+          question: this.state.storedQuestions[this.state.idQuestion].question,
+          options: this.state.storedQuestions[this.state.idQuestion].options
+            })
+      }
+      if (this.state.idQuestion !== prevState.idQuestion) {
+        this.setState({
+          question: this.state.storedQuestions[this.state.idQuestion].question,
+          options: this.state.storedQuestions[this.state.idQuestion].options,
+          userAnswer: null,
+          btnDisabled: true
+            })
+      }
       if (this.props.userData.pseudo) {
         this.showWelcomeMsg(this.props.userData.pseudo)
       }
-    }
 
-    submitAnswer = selectedAnswer => {
-        this.setState({
-            userAnswer: selectedAnswer,
-            btnDisabled: false
-          })
-    }
   }
+
+  submitAnswer = selectedAnswer => {
+      this.setState({
+          userAnswer: selectedAnswer,
+          btnDisabled: false
+        })
+  }
+
+  gameOver = () => {
+    this.setState({ quizEnd: true })
+  }
+
 
   /* qd le render s'éxécute, componentDidMount s'exécute */
   render() {
@@ -140,24 +148,32 @@ class Quiz extends Component {
     const displayOptions = this.state.options.map((option, index) => {
       return (
         <p key={index}
-          className={`answerOptions ${this.state.userAnswer === option ? "selected": null}`}
+          className={`answerOptions ${this.state.userAnswer === option ? 'selected' : null}`}
           onClick={() => this.submitAnswer(option)}>
         {option}
-      </p>)
+      </p>
+      )
     })
 
-    return (<div>
-      <h2>Bonjour : {pseudo}, et bienvenue sur notre Quiz !</h2>
-      <Levels/>
-      <ProgressBar/>
-      <h3>{this.state.question}</h3>
+    /*Si le QuizEnd (niveau) est terminé, j'affiche le message se trouvant dans le component QuizOver*/
+    return this.state.quizEnd ? ( <QuizOver /> ) : (
+      <Fragment>
+        <h2>Bonjour : {pseudo}, et bienvenue sur notre Quiz !</h2>
+        <Levels/>
+        <ProgressBar/>
+        <h3>{this.state.question}</h3>
 
-      {displayOptions}
+        {displayOptions}
 
-      <button className="btnSubmit" onClick={this.nextQuestion} type="button" disabled={this.state.btnDisabled}>
-        Suivant
-      </button>
-    </div>)
+        <button
+          className="btnSubmit"
+          onClick={this.nextQuestion}
+          type="button"
+          disabled={this.state.btnDisabled}>
+          Suivant
+        </button>
+      </Fragment>
+    )
   }
 }
 
