@@ -9,27 +9,28 @@ import { FaChevronRight } from 'react-icons/fa';
 
 toast.configure();
 
+const initialState = {
+  quizLevel: 0,
+  maxQuestions: 10,
+  storedQuestions: [],
+  question: null,
+  options: [],
+  idQuestion: 0,
+  btnDisabled: true,
+  userAnswer: null,
+  score: 0,
+  showWelcomeMsg: false,
+  quizEnd: false,
+  percent: null
+}
+
+const levelNames = ['debutant', 'confirmé', 'expert'];
+
 class Quiz extends Component {
 
   constructor(props) {
     super(props)
-
-    this.initialState = {
-      levelNames: ['debutant', 'confirmé', 'expert'],
-      quizLevel: 0,
-      maxQuestions: 10,
-      storedQuestions: [],
-      question: null,
-      options: [],
-      idQuestion: 0,
-      btnDisabled: true,
-      userAnswer: null,
-      score: 0,
-      showWelcomeMsg: false,
-      quizEnd: false
-    }
-
-    this.state = this.initialState;
+    this.state = initialState;
     this.storedDataRef = React.createRef();
   }
 
@@ -41,13 +42,8 @@ class Quiz extends Component {
 
       /*Ne pas faire afficher la réponse (dans le cas de user
       dév ayantl'extension react chrome, mozilla, etc)*/
-      const newArray = fetchedArrayQuiz.map(({
-        answer,
-        ...keepRest
-      }) => keepRest);
+      const newArray = fetchedArrayQuiz.map(({ answer, ...keepRest }) => keepRest);
       this.setState({ storedQuestions: newArray })
-    } else {
-      alert('Pas assez de questions');
     }
   }
 
@@ -72,7 +68,7 @@ class Quiz extends Component {
   /*Méthode de cycle de vie
   il s'exécute puis lance loadQuestions*/
   componentDidMount() {
-    this.loadQuestions(this.state.levelNames[this.state.quizLevel])
+    this.loadQuestions(levelNames[this.state.quizLevel])
   }
 
   nextQuestion = () => {
@@ -83,9 +79,7 @@ class Quiz extends Component {
       this.setState({ quizEnd: true })
       /*sinon on basculte sur la question suivante*/
     } else {
-      this.setState(prevState => ({
-        idQuestion: prevState.idQuestion + 1
-      }))
+      this.setState(prevState => ({ idQuestion: prevState.idQuestion + 1 }))
     }
 
     //Vérifer la réponse et incrémenter le score
@@ -115,22 +109,31 @@ class Quiz extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-      if ((this.state.storedQuestions !== prevState.storedQuestions) && this.state.storedQuestions.length) {
+
+    const {
+      maxQuestions,
+      storedQuestions,
+      idQuestion,
+      score,
+      quizEnd
+    } = this.state;
+
+      if ((storedQuestions !== prevState.storedQuestions) && storedQuestions.length) {
         this.setState({
-          question: this.state.storedQuestions[this.state.idQuestion].question,
-          options: this.state.storedQuestions[this.state.idQuestion].options
+          question: storedQuestions[idQuestion].question,
+          options: storedQuestions[idQuestion].options
             })
       }
-      if ((this.state.idQuestion !== prevState.idQuestion) && this.state.storedQuestions.length) {
+      if ((idQuestion !== prevState.idQuestion) && storedQuestions.length) {
         this.setState({
-          question: this.state.storedQuestions[this.state.idQuestion].question,
-          options: this.state.storedQuestions[this.state.idQuestion].options,
+          question: storedQuestions[idQuestion].question,
+          options: storedQuestions[idQuestion].options,
           userAnswer: null,
           btnDisabled: true
             })
       }
-      if (this.state.quizEnd !== prevState.quizEnd) {
-        const gradePercent = this.getPercentage(this.state.maxQuestions, this.state.score);
+      if (quizEnd !== prevState.quizEnd) {
+        const gradePercent = this.getPercentage(maxQuestions, score);
         this.gameOver(gradePercent);
       }
 
@@ -162,18 +165,33 @@ class Quiz extends Component {
   }
 
 loadLevelQuestions = (param) => {
-  this.setState({...this.initialState, quizLevel: param})
-  this.loadQuestions(this.state.levelNames[param]);
+  this.setState({...initialState, quizLevel: param})
+  this.loadQuestions(levelNames[param]);
 }
 
 
   /* qd le render s'éxécute, componentDidMount s'exécute */
   render() {
     const {pseudo} = this.props.userData;
-    const displayOptions = this.state.options.map((option, index) => {
+
+    const {
+      quizLevel,
+      maxQuestions,
+      question,
+      options,
+      idQuestion,
+      btnDisabled,
+      userAnswer,
+      score,
+      quizEnd,
+      percent
+    } = this.state;
+
+
+    const displayOptions = options.map((option, index) => {
       return (
         <p key={index}
-          className={`answerOptions ${this.state.userAnswer === option ? 'selected' : null}`}
+          className={`answerOptions ${userAnswer === option ? 'selected' : null}`}
           onClick={() => this.submitAnswer(option)}>
           <FaChevronRight /> {option}
       </p>
@@ -181,14 +199,14 @@ loadLevelQuestions = (param) => {
     })
 
     /*Si le QuizEnd (niveau) est terminé, j'affiche le message se trouvant dans le component QuizOver*/
-    return this.state.quizEnd ? (
+    return quizEnd ? (
       <QuizOver
         ref={this.storedDataRef}
-        levelNames={this.state.levelNames}
-        score={this.state.score}
-        maxQuestions={this.state.maxQuestions}
-        quizLevel={this.state.quizLevel}
-        percent={this.state.percent}
+        levelNames={levelNames}
+        score={score}
+        maxQuestions={maxQuestions}
+        quizLevel={quizLevel}
+        percent={percent}
         loadLevelQuestions={this.loadLevelQuestions}
         />
       )
@@ -197,23 +215,23 @@ loadLevelQuestions = (param) => {
       <Fragment>
         <h2>Bonjour : {pseudo}, et bienvenue sur notre Quiz !</h2>
         <Levels
-          levelNames={this.state.levelNames}
-          quizLevel={this.state.quizLevel}
+          levelNames={levelNames}
+          quizLevel={quizLevel}
           />
         <ProgressBar
-          idQuestion={this.state.idQuestion}
-          maxQuestions={this.state.maxQuestions} />
-        <h3>{this.state.question}</h3>
+          idQuestion={idQuestion}
+          maxQuestions={maxQuestions} />
+        <h3>{question}</h3>
 
         {displayOptions}
 
         <button
-          disabled={this.state.btnDisabled}
+          disabled={btnDisabled}
           className="btnSubmit"
           onClick={this.nextQuestion}
           type="button">
 
-          {this.state.idQuestion < this.state.maxQuestions - 1 ? 'Suivant' : 'Terminer'}
+          {idQuestion < maxQuestions - 1 ? 'Suivant' : 'Terminer'}
 
         </button>
       </Fragment>

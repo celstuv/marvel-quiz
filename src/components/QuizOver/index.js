@@ -1,11 +1,12 @@
 import React, {Fragment, useEffect, useState} from 'react';
 import { GiTrophyCup } from 'react-icons/gi';
+import Loader from '../Loader';
 
 const QuizOver = React.forwardRef((props, ref) => {
   /*console.log(props);
   console.log(ref);*/
   const { levelNames,
-          score ,
+          score,
           maxQuestions,
           quizLevel,
           percent,
@@ -92,14 +93,13 @@ const QuizOver = React.forwardRef((props, ref) => {
     ) :
     (
       <tr>
-        <td colspan='3'>
-          <div className="loader"></div>
-          <p style={{ textAlign:'center', color:'red'}}>Pas de réponses !</p>
+        <td colSpan='3'>
+          <Loader
+            loadingMsg={'Pas de réponses !'}
+            styling={{ textAlign: 'center', color: 'red' }}/>
         </td>
       </tr>
     )
-
-
 
   return (
     <Fragment>
