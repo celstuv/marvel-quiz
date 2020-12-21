@@ -125,7 +125,7 @@ export const QuizMarvel = [
                     heroId: 1009662
                 }
             ],
-            "confirme": [
+            "confirmé": [
                 {
                     id: 0,
                     question: "Qui est Logan dans la bande dessinée de Marvel Comics 'X-Men' ?",
