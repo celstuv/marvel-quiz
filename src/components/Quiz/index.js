@@ -14,7 +14,7 @@ class Quiz extends Component {
     super(props)
 
     this.initialState = {
-      levelNames: ['debutant', 'confirme', 'expert'],
+      levelNames: ['debutant', 'confirmé', 'expert'],
       quizLevel: 0,
       maxQuestions: 10,
       storedQuestions: [],
@@ -195,7 +195,10 @@ loadLevelQuestions = (param) => {
       (
       <Fragment>
         <h2>Bonjour : {pseudo}, et bienvenue sur notre Quiz !</h2>
-        <Levels/>
+        <Levels
+          levelNames={this.state.levelNames}
+          quizLevel={this.state.quizLevel}
+          />
         <ProgressBar
           idQuestion={this.state.idQuestion}
           maxQuestions={this.state.maxQuestions} />
