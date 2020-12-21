@@ -78,7 +78,8 @@ class Quiz extends Component {
     /*Verifier si l'on se trouve dans la dernière question du niveau*/
     if (this.state.idQuestion === this.state.maxQuestions - 1) {
       /*Si c'est le cas, on bascule sur composant gameOver*/
-      this.gameOver();
+      /*this.gameOver();*/
+      this.setState({ quizEnd: true })
       /*sinon on basculte sur la question suivante*/
     } else {
       this.setState(prevState => ({
@@ -127,6 +128,11 @@ class Quiz extends Component {
           btnDisabled: true
             })
       }
+      if (this.state.quizEnd !== prevState.quizEnd) {
+        const gradePercent = this.getPercentage(this.state.maxQuestions, this.state.score);
+        this.gameOver(gradePercent);
+      }
+
       if (this.props.userData.pseudo != prevProps.userData.pseudo) {
         this.showToastMsg(this.props.userData.pseudo)
       }
@@ -142,19 +148,15 @@ class Quiz extends Component {
 
   getPercentage = (maxQuest, ourScore) => (ourScore / maxQuest) * 100;
 
-  gameOver = () => {
-    const gradePercent = this.getPercentage(this.state.maxQuestions, this.state.score);
-    if(gradePercent >= 50){
+  gameOver = percent => {
+
+    if(percent >= 50) {
       this.setState({
         quizLevel: this.state.quizLevel + 1,
-        percent: gradePercent,
-        quizEnd: true
+        percent
       })
-    }else {
-      this.setState({
-        percent: gradePercent,
-        quizEnd: true
-      })
+    } else {
+      this.setState({ percent })
     }
   }
 
@@ -202,10 +204,10 @@ loadLevelQuestions = (param) => {
         {displayOptions}
 
         <button
+          disabled={this.state.btnDisabled}
           className="btnSubmit"
           onClick={this.nextQuestion}
-          type="button"
-          disabled={this.state.btnDisabled} >
+          type="button">
 
           {this.state.idQuestion < this.state.maxQuestions - 1 ? 'Suivant' : 'Terminer'}
 
