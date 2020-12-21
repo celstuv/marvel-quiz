@@ -36,12 +36,12 @@ const Welcome = (props) => {
   }, [userSession]);
 
   return userSession === null ? (
-    <Fragment>
       <Loader
         loadingMsg={'Authentification ...'}
         styling={{ textAlign: 'center', color: '#FFF' }}/>
-    </Fragment>
-  ) : (
+  )
+  :
+  (
       <div className="quiz-bg">
         <div className="container">
           <Logout />
