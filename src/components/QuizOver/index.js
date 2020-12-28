@@ -76,6 +76,10 @@ const QuizOver = React.forwardRef((props, ref) => {
     setLoading(true);
   }
 
+  const capitelizeFirstletter = string => {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
   const averageGrade = maxQuestions / 2;
 
   if (score < averageGrade) {
@@ -167,10 +171,38 @@ const resultInModal = !loading ?
       <h2>{ characterInformations.data.results[0].name }</h2>
     </div>
     <div className="modalBody">
-      <h3>Titre2</h3>
+      <div className="comicImage">
+        <img
+          src={characterInformations.data.results[0].thumbnail.path+'.'+characterInformations.data.results[0].thumbnail.extension}
+          alt={characterInformations.data.results[0].name}
+        />
+        <p>{characterInformations.attributionText}</p>
+      </div>
+      <div className="comicDetails">
+        <h3>Description</h3>
+        {
+          characterInformations.data.results[0].description ? <p>{ characterInformations.data.results[0].description }</p>
+        : <p>Description indisponible ....</p>
+
+        }
+        <h3>Plus d'informations</h3>
+        {
+          characterInformations.data.results[0].urls &&
+          characterInformations.data.results[0].urls.map( (url, index) => {
+            return <a
+                    key={index}
+                    href={url.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >
+                    {capitelizeFirstletter(url.type)}
+                    </a>
+          })
+        }
+      </div>
     </div>
     <div className="modalFooter">
-      <button className="modalBtn">Fermer</button>
+      <button className="modalBtn" onClick={ hideModal }>Fermer</button>
     </div>
   </Fragment>
 )
